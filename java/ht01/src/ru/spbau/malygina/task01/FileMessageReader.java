@@ -8,20 +8,31 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Created by T.Malygina on 28.02.15.
+ * @author T.Malygina
+ * @version 28.02.15
  */
-public class FileMessageReader {
+public class FileMessageReader implements AutoCloseable {
     private File file;
-    BufferedReader bufferedReader = null;
+    private BufferedReader bufferedReader = null;
 
+    /** Default constructor
+     * @param file
+     * */
     public FileMessageReader(File file) {
         this.file = file;
     }
 
+    /**
+     * @return Message object if everything is ok, null if readLine returns null
+     * @throws IllegalMessageFormatException
+     *
+     * */
     public Message readMessage() throws IllegalMessageFormatException, IOException {
         if (bufferedReader == null)
             bufferedReader = new BufferedReader(new FileReader(file));
         String numStr = bufferedReader.readLine();
+        if (numStr == null)
+            return null;
         int linesCount;
         try {
             linesCount = Integer.parseInt(numStr);
@@ -31,10 +42,19 @@ public class FileMessageReader {
         List<String> lines = new ArrayList<String>();
         for (int i = 0; i < linesCount; i++) {
             //TODO: add some logic to throw exception if file is finished before linesCount
-            String s = bufferedReader.readLine();
-            lines.add(s);
+            String messageStr = bufferedReader.readLine();
+            if (messageStr == null)
+                throw new IllegalMessageFormatException("File ended before message was read: expected " +
+                        Integer.toString(linesCount) + " message line(s), got " + Integer.toString(i) + " message line(s)");
+            lines.add(messageStr);
         }
         Message message = new Message(lines);
         return message;
+    }
+
+
+    @Override
+    public void close() throws IOException {
+        bufferedReader.close();
     }
 }
