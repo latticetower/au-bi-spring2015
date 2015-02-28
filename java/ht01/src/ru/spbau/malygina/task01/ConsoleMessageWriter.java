@@ -1,9 +1,9 @@
 package ru.spbau.malygina.task01;
 
-import java.io.IOException;
 import java.util.List;
 
 /**
+ * Class writes incoming messages to console.
  * @author T.Malygina
  * @version 28.02.15
  */
@@ -11,7 +11,8 @@ public class ConsoleMessageWriter implements MessageWriter {
     private int messagesWritten = 0;
 
     /**
-     * @param message
+     * Method writes message to console.
+     * @param message text to be written to console
      * */
     @Override
     public void writeMessage(Message message) {
@@ -26,8 +27,12 @@ public class ConsoleMessageWriter implements MessageWriter {
         System.out.flush();
     }
 
+    /**
+     * Method should close resource, does nothing (console needn't to be closed).
+     * */
     @Override
-    public void close() throws IOException {
+    public void close() {
+        System.out.flush();//at this moment everything should be flushed already, this is just in case
 
     }
 }

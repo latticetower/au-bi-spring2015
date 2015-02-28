@@ -7,8 +7,8 @@ import java.io.IOException;
  * @version 28.02.15
  */
 public interface MessageWriter extends AutoCloseable {
-    /**
-     * @param message
+    /** Method processes given message
+     * @param message data to be written
      * */
     void writeMessage(Message message) throws IOException;
 }
